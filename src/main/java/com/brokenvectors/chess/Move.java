@@ -7,6 +7,11 @@ public class Move {
         this.origin = origin;
         this.target = target;
     }
+    public Move(String moveString) {
+        String[] coords = moveString.split("-");
+        this.origin = new Coordinate(coords[0]);
+        this.target = new Coordinate(coords[1]);
+    }
     public static String toAlphabet(int i) {
         switch(i){
             case 0:

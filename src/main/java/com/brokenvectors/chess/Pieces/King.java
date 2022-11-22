@@ -14,16 +14,10 @@ public class King extends Piece {
 
     @Override
     public Vector<Move> getMoves() {
+        // TODO: Castling
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
-        // x: +1 y: 0
-        // x: +1 y: +1
-        // x: +1 y: -1
-        // x: 0 y: +1
-        // x: 0 y: -1
-        // x: -1 y: 0
-        // x: -1 y: -1
-        // x: -1 y: +1
+
         moves.add(new Move(origin, new Coordinate(origin.y + 0, origin.x + 1)));
         moves.add(new Move(origin, new Coordinate(origin.y + 1, origin.x + 1)));
         moves.add(new Move(origin, new Coordinate(origin.y - 1, origin.x + 1)));

@@ -81,27 +81,54 @@ public class Board {
     public Piece getPiece(Coordinate coordinate) {
         return this.pieces[coordinate.y][coordinate.x];
     }
-    public boolean validateMove(Move move) {
-        // Create list of legal moves, check if move is part of that list
-        // Check if hypothetical board with the move played doesn't put the king in check
-        // If it doesn't validate move, void it
-        // The pros use bit-boards, but I'm not smart enough for that
-        return true;
+    public Vector<Move> getLegalMoves(boolean color) {
+        // TODO: Narrow down moves list: right now this returns pseudo-legal moves(doesn't take pins/checks/etc. into account)
+        Vector<Move> legalMoves = new Vector<Move>();
+        for(int j = 0; j < 8; j++) {
+            for(int i = 0; i < 8; i++) {
+                Piece piece = this.pieces[j][i];
+                if(piece != null && piece.getColor() == color) {
+                    legalMoves.addAll(piece.getMoves());
+                }
+            }
+        }
+        return legalMoves;
     }
-    public void makeMove(Move move) {
+    public boolean validateMove(Move move, boolean color) {
+        // Create list of legal moves, check if move is part of that list
+        // Check if hypothetical board with the move played doesn't put the king in check(check if enemy's legal moves has king's square as target)
+        // If it doesn't validate move, void it
+        // TODO: see getLegalMoves()
+        for(Move m: this.getLegalMoves(this.getTurn())) {
+            boolean moveFound = (move.origin.x == m.origin.x) && (move.origin.y == m.origin.y) && (move.target.x == m.target.x) && (move.target.y == m.target.y);
+            if(moveFound) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean makeMove(String moveString) {
+        return this.makeMove(new Move(moveString));
+    }
+    public boolean makeMove(Move move) {
+        // Returns true if move could be made, otherwise returns false
         // TODO: Move validation
         Piece piece = this.pieces[move.origin.y][move.origin.x];
-        if(piece != null && validateMove(move)) {
+        if(piece != null && validateMove(move, this.getTurn())) {
             boolean turnIsRespected = isWhiteToPlay == piece.getColor();
-            if(!turnIsRespected) return;
+            if(!turnIsRespected) return false; // redundant?
             // Remove piece from origin square, move it to target square
             this.pieces[move.origin.y][move.origin.x] = null;
             piece.setPosition(move.target);
             piece.onMove();
             this.pieces[move.target.y][move.target.x] = piece;
             isWhiteToPlay = !isWhiteToPlay; // flip turn
+            return true;
         }
-
+        else {
+            System.out.println("Couldn't make move: Piece either doesn't exist or move is illegal, or turn wasn't respected");
+            return false;
+        }
     }
     public boolean getTurn() {
         return isWhiteToPlay;
