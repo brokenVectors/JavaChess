@@ -4,8 +4,8 @@ import java.util.Vector;
 
 public abstract class Piece {
      private Coordinate position;
-     private Board board;
-     private boolean isWhite;
+     private final Board board;
+     private final boolean isWhite;
      public PieceType pieceType;
      public abstract Vector<Move> getMoves(); // Returns a list of pseudo-legal moves: https://www.chessprogramming.org/Pseudo-Legal_Move
      public abstract void onMove();
@@ -14,6 +14,7 @@ public abstract class Piece {
           this.board = board;
           this.isWhite = isWhite;
      }
+
      public Coordinate getPosition() {
           return position;
      }

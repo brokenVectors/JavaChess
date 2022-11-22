@@ -18,12 +18,12 @@ public class King extends Piece {
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
 
-        moves.add(new Move(origin, new Coordinate(origin.y + 0, origin.x + 1)));
+        moves.add(new Move(origin, new Coordinate(origin.y, origin.x + 1)));
         moves.add(new Move(origin, new Coordinate(origin.y + 1, origin.x + 1)));
         moves.add(new Move(origin, new Coordinate(origin.y - 1, origin.x + 1)));
-        moves.add(new Move(origin, new Coordinate(origin.y + 1, origin.x + 0)));
-        moves.add(new Move(origin, new Coordinate(origin.y - 1, origin.x + 0)));
-        moves.add(new Move(origin, new Coordinate(origin.y + 0, origin.x - 1)));
+        moves.add(new Move(origin, new Coordinate(origin.y + 1, origin.x)));
+        moves.add(new Move(origin, new Coordinate(origin.y - 1, origin.x)));
+        moves.add(new Move(origin, new Coordinate(origin.y, origin.x - 1)));
         moves.add(new Move(origin, new Coordinate(origin.y - 1, origin.x - 1)));
         moves.add(new Move(origin, new Coordinate(origin.y + 1, origin.x - 1)));
 

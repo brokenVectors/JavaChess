@@ -8,13 +8,9 @@ public class Main {
         System.out.println(board);
         board.makeMove("e2-e4");
         System.out.println(board);
-        board.makeMove("e7-e5");
+        board.makeMove("d7-d5");
         System.out.println(board);
-        board.makeMove("d1-h5");
-        System.out.println(board);
-        board.makeMove("f7-f6");
-        System.out.println(board);
-        board.makeMove("h5-h7");
+        board.undo();
         System.out.println(board);
     }
 }

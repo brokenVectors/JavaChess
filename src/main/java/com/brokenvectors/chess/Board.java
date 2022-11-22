@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class Board {
-    Piece[][] pieces;
-    HashMap<Boolean, King> kings;
+    private Piece[][] pieces;
+    private final HashMap<Boolean, King> kings;
+    private BoardHistory history;
     private boolean isWhiteToPlay;
     public Board() {
         this.isWhiteToPlay = true;
         this.pieces = new Piece[8][8];
+        this.history = new BoardHistory(this);
         this.kings = new HashMap<Boolean, King>();
 
         // Board starting position
@@ -50,6 +52,11 @@ public class Board {
         this.addPiece(new Pawn(this, false), new Coordinate(6,5));
         this.addPiece(new Pawn(this, false), new Coordinate(6,6));
         this.addPiece(new Pawn(this, false), new Coordinate(6,7));
+        this.history.save();
+    }
+    public void clear() {
+        this.pieces = new Piece[8][8];
+        this.kings.clear();
     }
     public King getKing(boolean color) {
         // color is true if white, false if black
@@ -66,17 +73,17 @@ public class Board {
 
     public String toString() {
         // String representation of board
-        String str = "";
+        StringBuilder str = new StringBuilder();
         // because 2d arrays are always top to bottom, render order must be reversed on y-axis
         for(int j = 7; j >= 0; j--) {
             for(int i = 0; i < 8; i++) {
                 Piece piece = pieces[j][i];
-                if(piece == null) str += ".  ";
-                else str += piece.toString() + " ";
+                if(piece == null) str.append(".  ");
+                else str.append(piece.toString()).append(" ");
             }
-            str += "\n";
+            str.append("\n");
         }
-        return str;
+        return str.toString();
     }
     public Piece getPiece(Coordinate coordinate) {
         return this.pieces[coordinate.y][coordinate.x];
@@ -110,6 +117,17 @@ public class Board {
     public boolean makeMove(String moveString) {
         return this.makeMove(new Move(moveString));
     }
+    private void movePiece(Move move, Piece piece) {
+        // moves a piece without any validation
+        // Remove piece from origin square, move it to target square
+        piece.setPosition(move.target);
+        this.pieces[move.origin.y][move.origin.x] = null;
+        this.pieces[move.target.y][move.target.x] = piece;
+        this.history.save();
+    }
+    public void undo() {
+        this.history.undo();
+    }
     public boolean makeMove(Move move) {
         // Returns true if move could be made, otherwise returns false
         // TODO: Move validation
@@ -118,10 +136,8 @@ public class Board {
             boolean turnIsRespected = isWhiteToPlay == piece.getColor();
             if(!turnIsRespected) return false; // redundant?
             // Remove piece from origin square, move it to target square
-            this.pieces[move.origin.y][move.origin.x] = null;
-            piece.setPosition(move.target);
+            this.movePiece(move, piece);
             piece.onMove();
-            this.pieces[move.target.y][move.target.x] = piece;
             isWhiteToPlay = !isWhiteToPlay; // flip turn
             return true;
         }
