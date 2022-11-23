@@ -22,45 +22,50 @@ public class BoardHistory {
 
             }
         }
+        state.isWhiteToPlay = this.board.getTurn();
         states.add(state);
     }
-
-    public void undo() {
-        if(states.size() < 2)
-            return;
-        states.pop();
+    public void load(Board other) {
         BoardState last = states.lastElement();
-        this.board.clear();
+        other.clear();
         for(PieceData pieceData: last.pieces) {
             Piece piece;
             switch(pieceData.pieceType) {
                 case KING:
-                    piece = new King(this.board, pieceData.isWhite);
+                    piece = new King(other, pieceData.isWhite);
                     break;
                 case QUEEN:
-                    piece = new Queen(this.board, pieceData.isWhite);
+                    piece = new Queen(other, pieceData.isWhite);
                     break;
                 case ROOK:
-                    piece = new Rook(this.board, pieceData.isWhite);
+                    piece = new Rook(other, pieceData.isWhite);
                     break;
                 case KNIGHT:
-                    piece = new Knight(this.board, pieceData.isWhite);
+                    piece = new Knight(other, pieceData.isWhite);
                     break;
                 case BISHOP:
-                    piece = new Bishop(this.board, pieceData.isWhite);
+                    piece = new Bishop(other, pieceData.isWhite);
                     break;
                 case PAWN:
-                    piece = new Pawn(this.board, pieceData.isWhite);
+                    piece = new Pawn(other, pieceData.isWhite);
                     break;
                 default:
                     // this will never happen but the compiler obliges me to add a default case
                     System.out.println("what");
-                    piece = new Pawn(this.board, pieceData.isWhite);
+                    piece = new Pawn(other, pieceData.isWhite);
                     break;
             }
             piece.setPosition(new Coordinate(pieceData.y, pieceData.x));
-            this.board.addPiece(piece, piece.getPosition());
+            other.addPiece(piece, piece.getPosition());
+            other.setTurn(last.isWhiteToPlay);
         }
+    }
+
+    public void undo() {
+        if(this.states.size() < 2)
+            return;
+        this.states.pop();
+        this.load(this.board);
         // Deserialize BoardState.
     }
 }

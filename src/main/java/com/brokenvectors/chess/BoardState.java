@@ -9,6 +9,7 @@ public class BoardState {
     // Board uses a 2D array to easily access a piece with two coordinates.
 
     public Vector<PieceData> pieces;
+    public boolean isWhiteToPlay;
     public BoardState() {
         pieces = new Vector<PieceData>();
     }

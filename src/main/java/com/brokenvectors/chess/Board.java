@@ -88,18 +88,45 @@ public class Board {
     public Piece getPiece(Coordinate coordinate) {
         return this.pieces[coordinate.y][coordinate.x];
     }
-    public Vector<Move> getLegalMoves(boolean color) {
-        // TODO: Narrow down moves list: right now this returns pseudo-legal moves(doesn't take pins/checks/etc. into account)
-        Vector<Move> legalMoves = new Vector<Move>();
+    public Vector<Move> getPseudoLegalMoves(boolean color) {
+        Vector<Move> pseudoLegalMoves = new Vector<Move>();
         for(int j = 0; j < 8; j++) {
             for(int i = 0; i < 8; i++) {
                 Piece piece = this.pieces[j][i];
                 if(piece != null && piece.getColor() == color) {
-                    legalMoves.addAll(piece.getMoves());
+                    pseudoLegalMoves.addAll(piece.getMoves());
                 }
             }
         }
+        return pseudoLegalMoves;
+    }
+    public Vector<Move> getLegalMoves(boolean color) {
+        Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(color);
+        Vector<Move> legalMoves = new Vector<Move>();
+        Board imaginary = new Board();
+        //this.history.load(imaginary); // not loading correctly
+
+        for(Move move: pseudoLegalMoves) {
+            this.history.load(imaginary);
+            imaginary.movePiece(move);
+            imaginary.setTurn(this.isWhiteToPlay); // don't know why, but BoardHistory won't set turn correctly
+            boolean legal = !imaginary.inCheck(imaginary.getTurn());
+            if(legal){
+                legalMoves.add(move);
+            }
+            imaginary.history.undo();
+        }
         return legalMoves;
+    }
+    public boolean inCheck(boolean color) {
+        // Check if the enemy player has any pieces that can attack the king.
+        // Since it doesn't matter if the move is actually legal, just check pseudo legal moves.
+        // Example: a pinned piece can still check the enemy king.
+        Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(!color);
+        for(Move move: pseudoLegalMoves) {
+            if(move.target.equals(this.kings.get(color).getPosition())) return true;
+        }
+        return false;
     }
     public boolean validateMove(Move move, boolean color) {
         // Create list of legal moves, check if move is part of that list
@@ -117,13 +144,32 @@ public class Board {
     public boolean makeMove(String moveString) {
         return this.makeMove(new Move(moveString));
     }
-    private void movePiece(Move move, Piece piece) {
+    private void movePiece(Move move) {
         // moves a piece without any validation
         // Remove piece from origin square, move it to target square
+        Piece piece = this.getPiece(move.origin);
         piece.setPosition(move.target);
         this.pieces[move.origin.y][move.origin.x] = null;
         this.pieces[move.target.y][move.target.x] = piece;
         this.history.save();
+    }
+    public void detectGameOver() {
+        // Detects stalemate or checkmate.
+        if(this.getLegalMoves(true).size() == 0 && this.isWhiteToPlay) {
+            if(this.inCheck(true)) {
+                System.out.println("White is in checkmate!");
+            } else {
+                System.out.println("Stalemate!");
+            }
+        }
+
+        if(this.getLegalMoves(false).size() == 0 && !this.isWhiteToPlay) {
+            if(this.inCheck(false)) {
+                System.out.println("Black is in checkmate!");
+            } else {
+                System.out.println("Stalemate!");
+            }
+        }
     }
     public void undo() {
         this.history.undo();
@@ -136,9 +182,10 @@ public class Board {
             boolean turnIsRespected = isWhiteToPlay == piece.getColor();
             if(!turnIsRespected) return false; // redundant?
             // Remove piece from origin square, move it to target square
-            this.movePiece(move, piece);
+            this.movePiece(move);
             piece.onMove();
             isWhiteToPlay = !isWhiteToPlay; // flip turn
+            this.detectGameOver();
             return true;
         }
         else {
@@ -148,5 +195,8 @@ public class Board {
     }
     public boolean getTurn() {
         return isWhiteToPlay;
+    }
+    public void setTurn(boolean isWhiteToPlay) {
+        this.isWhiteToPlay = isWhiteToPlay;
     }
 }

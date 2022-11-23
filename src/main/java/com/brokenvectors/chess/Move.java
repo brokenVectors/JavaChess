@@ -37,4 +37,7 @@ public class Move {
     public String toString() {
         return toAlphabet(origin.x) + Integer.toString(origin.y + 1) + "-" + toAlphabet(target.x) + Integer.toString(target.y + 1);
     }
+    public boolean equals(Move other) {
+        return this.origin.equals(other.origin) && this.target.equals(other.target);
+    }
 }

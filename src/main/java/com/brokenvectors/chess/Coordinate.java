@@ -41,4 +41,7 @@ public class Coordinate {
     public static boolean isInBounds(int y, int x) {
         return ( (y > 0) && (y < 8) ) && ( (x > 0) && (x < 8) );
     }
+    public boolean equals(Coordinate other) {
+        return (this.x == other.x) && (this.y == other.y);
+    }
 }
