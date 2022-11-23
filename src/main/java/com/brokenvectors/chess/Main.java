@@ -1,5 +1,4 @@
 package com.brokenvectors.chess;
-
 import com.brokenvectors.chess.Pieces.*;
 
 public class Main {
@@ -16,5 +15,6 @@ public class Main {
         System.out.println(board);
         board.makeMove("e2-e4");
         System.out.println(board);
+        BoardRenderer.run();
     }
 }
