@@ -19,6 +19,7 @@ public class Rook extends Piece {
         // TODO: this code is still repetitive but i doubt i can do anything about it
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
+        /*
         for(int i = origin.x; i >= 0; i--) {
             Coordinate target = new Coordinate(origin.y, i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
@@ -37,6 +38,27 @@ public class Rook extends Piece {
         }
         for(int i = origin.y + 1; i < 8; i++) {
             Coordinate target = new Coordinate(i, origin.x);
+            if(this.canOccupy(target)) moves.add(new Move(origin, target));
+            if(this.isBlockedAt(target)) break;
+        }
+         */
+        for(int i = 1; i < 8; i++) {
+            Coordinate target = new Coordinate(origin.y, origin.x + i);
+            if(this.canOccupy(target)) moves.add(new Move(origin, target));
+            if(this.isBlockedAt(target)) break;
+        }
+        for(int i = 1; i < 8; i++) {
+            Coordinate target = new Coordinate(origin.y, origin.x - i);
+            if(this.canOccupy(target)) moves.add(new Move(origin, target));
+            if(this.isBlockedAt(target)) break;
+        }
+        for(int i = 1; i < 8; i++) {
+            Coordinate target = new Coordinate(origin.y + i, origin.x);
+            if(this.canOccupy(target)) moves.add(new Move(origin, target));
+            if(this.isBlockedAt(target)) break;
+        }
+        for(int i = 1; i < 8; i++) {
+            Coordinate target = new Coordinate(origin.y - i, origin.x);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
             if(this.isBlockedAt(target)) break;
         }
