@@ -90,14 +90,15 @@ public class BoardRenderer extends JFrame {
     }
     public void makeMove(int y1, int x1, int y2, int x2) {
         this.board.makeMove(new Move(new Coordinate(y1, x1), new Coordinate(y2, x2)));
+        //this.board.movePiece(new Move(new Coordinate(y1, x1), new Coordinate(y2, x2)));
         this.repaint();
     }
     public void select(int x, int y) {
         this.selected_x = x;
         this.selected_y = y;
         this.selecting = true;
-        System.out.println(this.selected_x);
-        System.out.println(this.selected_y);
+        //System.out.println(this.selected_x);
+        //System.out.println(this.selected_y);
         Piece selectedPiece = this.board.getPiece(new Coordinate(this.selected_y,this.selected_x));
         if(selectedPiece == null) {
             selecting = false; // If user selected nothing, set selecting to false

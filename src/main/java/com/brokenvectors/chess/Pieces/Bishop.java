@@ -18,25 +18,26 @@ public class Bishop extends Piece {
     public Vector<Move> getMoves() {
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
+        // PROBLEM: even if piece can occupy square, it should break if a piece is present.
         for(int i = 1; i < 8; i++) {
             Coordinate target = new Coordinate(origin.y + i, origin.x + i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
-            else break;
+            if(this.isBlockedAt(target)) break;
         }
         for(int i = 1; i < 8; i++) {
             Coordinate target = new Coordinate(origin.y - i, origin.x - i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
-            else break;
+            if(this.isBlockedAt(target)) break;
         }
         for(int i = 1; i < 8; i++) {
             Coordinate target = new Coordinate(origin.y - i, origin.x + i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
-            else break;
+            if(this.isBlockedAt(target)) break;
         }
         for(int i = 1; i < 8; i++) {
             Coordinate target = new Coordinate(origin.y + i, origin.x - i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
-            else break;
+            if(this.isBlockedAt(target)) break;
         }
         return moves;
     }

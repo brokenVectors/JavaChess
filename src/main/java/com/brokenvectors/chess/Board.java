@@ -104,8 +104,6 @@ public class Board {
         Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(color);
         Vector<Move> legalMoves = new Vector<Move>();
         Board imaginary = new Board();
-        //this.history.load(imaginary); // not loading correctly
-
         for(Move move: pseudoLegalMoves) {
             this.history.load(imaginary);
             imaginary.movePiece(move);
@@ -144,7 +142,7 @@ public class Board {
     public boolean makeMove(String moveString) {
         return this.makeMove(new Move(moveString));
     }
-    private void movePiece(Move move) {
+    public void movePiece(Move move) {
         // moves a piece without any validation
         // Remove piece from origin square, move it to target square
         Piece piece = this.getPiece(move.origin);
@@ -177,6 +175,7 @@ public class Board {
     public boolean makeMove(Move move) {
         // Returns true if move could be made, otherwise returns false
         // TODO: Move validation
+        System.out.println(move.toString());
         Piece piece = this.pieces[move.origin.y][move.origin.x];
         if(piece != null && validateMove(move, this.getTurn())) {
             boolean turnIsRespected = isWhiteToPlay == piece.getColor();
@@ -189,7 +188,17 @@ public class Board {
             return true;
         }
         else {
-            System.out.println("Couldn't make move: Piece either doesn't exist or move is illegal, or turn wasn't respected");
+
+
+            if(piece == null) System.out.println("Couldn't make move: Piece doesn't exist");
+
+            else {
+                boolean turnIsRespected = isWhiteToPlay == piece.getColor();
+                if(turnIsRespected)
+                    System.out.println("Move is illegal");
+                else
+                    System.out.println("Turn wasn't respected");
+            }
             return false;
         }
     }
