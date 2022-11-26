@@ -19,7 +19,7 @@ public class Rook extends Piece {
         // TODO: this code is still repetitive but i doubt i can do anything about it
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
-        for(int i = 0; i < origin.x; i++) {
+        for(int i = origin.x; i >= 0; i--) {
             Coordinate target = new Coordinate(origin.y, i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
             if(this.isBlockedAt(target)) break;
@@ -30,7 +30,7 @@ public class Rook extends Piece {
             if(this.isBlockedAt(target)) break;
         }
 
-        for(int i = 0; i < origin.y; i++) {
+        for(int i = origin.y; i >= 0; i--) {
             Coordinate target = new Coordinate(i, origin.x);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
             if(this.isBlockedAt(target)) break;

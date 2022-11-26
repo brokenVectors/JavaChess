@@ -21,7 +21,7 @@ public class Queen extends Piece {
         Coordinate origin = this.getPosition();
 
         // Rook moves(Vertical/Horizontal)
-        for(int i = 0; i < origin.x; i++) {
+        for(int i = origin.x; i >= 0; i--) {
             Coordinate target = new Coordinate(origin.y, i);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
             if(this.isBlockedAt(target)) break;
@@ -32,7 +32,7 @@ public class Queen extends Piece {
             if(this.isBlockedAt(target)) break;
         }
 
-        for(int i = 0; i < origin.y; i++) {
+        for(int i = origin.y; i >= 0; i--) {
             Coordinate target = new Coordinate(i, origin.x);
             if(this.canOccupy(target)) moves.add(new Move(origin, target));
             if(this.isBlockedAt(target)) break;
