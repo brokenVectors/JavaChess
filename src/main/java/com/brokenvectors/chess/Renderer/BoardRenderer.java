@@ -11,7 +11,11 @@ import java.awt.*;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.Vector;
 
 public class BoardRenderer extends JFrame {
     private static BoardRenderer instance;
@@ -85,7 +89,17 @@ public class BoardRenderer extends JFrame {
         }
     }
     public void makeMove(int y1, int x1, int y2, int x2) {
-        this.board.makeMove(new Move(new Coordinate(y1, x1), new Coordinate(y2, x2)));
+        //this.board.makeMove(new Move(new Coordinate(y1, x1), new Coordinate(y2, x2)));
+        // Wish java had an easy way of finding inside a Vector...
+        // Looking for move instead of instantiating, because of special moves
+        Vector<Move> legalMoves = this.board.getLegalMoves(this.board.getTurn());
+        for(Move move: legalMoves) {
+            if(move.origin.y == y1 && move.origin.x == x1 && move.target.y == y2 && move.target.x == x2) {
+                this.board.makeMove(move);
+                break;
+            }
+
+        }
         //this.board.movePiece(new Move(new Coordinate(y1, x1), new Coordinate(y2, x2)));
         this.repaint();
     }

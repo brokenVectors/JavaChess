@@ -76,7 +76,7 @@ public class Pawn extends Piece {
         if(canEnPassantLeft) {
             System.out.println("ELIGIBLE FOR EN PASSANT LEFT");
             Piece finalLeftSidePiece = leftSidePiece;
-            moves.add(new Move(origin, leftDiagonal) {
+            Move specialMove = new Move(origin, leftDiagonal) {
                 @Override
                 public void special(Board board) {
                     // Removes pawn previously adjacent to attacking pawn. [ EN PASSANT ]
@@ -84,7 +84,9 @@ public class Pawn extends Piece {
                     board.removePiece(finalLeftSidePiece);
                     System.out.println(finalLeftSidePiece);
                 }
-            });
+            };
+            moves.add(specialMove);
+            //specialMove.special(this.getBoard());
         }
         return moves;
     }
