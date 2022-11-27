@@ -58,6 +58,7 @@ public class BoardRenderer extends JFrame {
     }
     private void loadPieceSprite(PieceType pieceType, boolean isWhite, String fileName) {
         try {
+            // TODO: make this path relative
             sprites.get(isWhite).put(pieceType, ImageIO.read(new File("/Users/miles/Documents/media/chess_sprites/" + fileName)).getScaledInstance(50,50, Image.SCALE_DEFAULT));
         }
         catch(IOException ignored) {

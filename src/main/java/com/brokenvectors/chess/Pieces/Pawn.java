@@ -27,7 +27,7 @@ public class Pawn extends Piece {
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
         // direction inverses movement if pawn is black
-        // TODO: add en-passant, promotion
+        // TODO: add promotion
         int direction = 1;
         if(!this.getColor()) {
             // if pawn is black:

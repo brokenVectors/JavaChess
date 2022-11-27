@@ -71,7 +71,7 @@ public class Board {
         piece.setPosition(coordinate);
     }
     public void removePiece(Piece piece) {
-        // FIXME: potential history problem? state duplication?
+        // FIXME: potential history problem?
         // This function is probably going to be used by promotion and en-passant, special moves.
         this.pieces[piece.getPosition().y][piece.getPosition().x] = null;
     }
@@ -95,20 +95,21 @@ public class Board {
         if(coordinate.x < 0 || coordinate.x > 7) return null;
         return this.pieces[coordinate.y][coordinate.x];
     }
-    public Vector<Move> getPseudoLegalMoves(boolean color) {
+    public Vector<Move> getPseudoLegalMoves(boolean color, boolean excludeCastling) {
         Vector<Move> pseudoLegalMoves = new Vector<Move>();
         for(int j = 0; j < 8; j++) {
             for(int i = 0; i < 8; i++) {
                 Piece piece = this.pieces[j][i];
                 if(piece != null && piece.getColor() == color) {
-                    pseudoLegalMoves.addAll(piece.getMoves());
+                    if(piece instanceof King) pseudoLegalMoves.addAll(((King)piece).getMoves(excludeCastling));
+                    else pseudoLegalMoves.addAll(piece.getMoves());
                 }
             }
         }
         return pseudoLegalMoves;
     }
     public Vector<Move> getLegalMoves(boolean color) {
-        Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(color);
+        Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(color, false);
         Vector<Move> legalMoves = new Vector<Move>();
         Board imaginary = new Board();
         for(Move move: pseudoLegalMoves) {
@@ -123,15 +124,25 @@ public class Board {
         }
         return legalMoves;
     }
+    public boolean isSquareAttacked(boolean color, Coordinate coord, boolean excludeCastling) {
+        Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(!color, excludeCastling);
+        for(Move move: pseudoLegalMoves) {
+            if(move.target.equals(coord)) return true;
+        }
+        return false;
+    }
     public boolean inCheck(boolean color) {
         // Check if the enemy player has any pieces that can attack the king.
         // Since it doesn't matter if the move is actually legal, just check pseudo legal moves.
         // Example: a pinned piece can still check the enemy king.
+        /*
         Vector<Move> pseudoLegalMoves = this.getPseudoLegalMoves(!color);
         for(Move move: pseudoLegalMoves) {
             if(move.target.equals(this.kings.get(color).getPosition())) return true;
         }
         return false;
+        */
+        return this.isSquareAttacked(color, this.kings.get(color).getPosition(), true);
     }
     public boolean validateMove(Move move, boolean color) {
         // Create list of legal moves, check if move is part of that list

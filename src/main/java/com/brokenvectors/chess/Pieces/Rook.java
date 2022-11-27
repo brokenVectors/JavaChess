@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class Rook extends Piece {
+    public boolean hasMoved = false; // for castling
     public Rook(Board board, boolean isWhite) {
         super(board, isWhite);
         this.pieceType = PieceType.ROOK;
@@ -45,6 +46,6 @@ public class Rook extends Piece {
 
     @Override
     public void onMove(Move move) {
-
+        this.hasMoved = true;
     }
 }

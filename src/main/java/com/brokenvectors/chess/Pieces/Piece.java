@@ -50,7 +50,7 @@ public abstract class Piece {
      }
      public boolean isBlockedAt(Coordinate target) {
           // Returns if a given square should terminate a given ray.
-          // Simply put, if a piece is on a given square.
+          // Simply put, if any piece is on a given square.
           boolean inBounds = (target.x >= 0) && (target.x < 8) && (target.y >= 0) && (target.y < 8);
           if(!inBounds) return true;
           Piece pieceAtTarget = this.getBoard().getPiece(target);
