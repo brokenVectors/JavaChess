@@ -91,6 +91,8 @@ public class Board {
         return str.toString();
     }
     public Piece getPiece(Coordinate coordinate) {
+        if(coordinate.y < 0 || coordinate.y > 7) return null;
+        if(coordinate.x < 0 || coordinate.x > 7) return null;
         return this.pieces[coordinate.y][coordinate.x];
     }
     public Vector<Move> getPseudoLegalMoves(boolean color) {

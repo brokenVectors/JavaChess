@@ -54,40 +54,26 @@ public class Pawn extends Piece {
         // SOLUTION: To make room for other special moves(castling, promotion), add a special function to Move
         Coordinate rightSide = new Coordinate(this.getPosition().y, this.getPosition().x + 1);
         Coordinate leftSide = new Coordinate(this.getPosition().y, this.getPosition().x - 1);
-        Piece rightSidePiece = null;
-        Piece leftSidePiece = null;
-        if(this.canOccupy(rightSide)) rightSidePiece = this.getBoard().getPiece(rightSide);
-        if(this.canOccupy(leftSide)) leftSidePiece = this.getBoard().getPiece(leftSide);
+        Piece rightSidePiece = this.getBoard().getPiece(rightSide);
+        Piece leftSidePiece = this.getBoard().getPiece(leftSide);
         boolean canEnPassantRight = !this.isBlockedAt(rightDiagonal) && rightSidePiece instanceof Pawn && ((Pawn) rightSidePiece).justMovedTwoSquares && ((Pawn) rightSidePiece).onNthRankFromStart(2);
         boolean canEnPassantLeft = !this.isBlockedAt(leftDiagonal) && leftSidePiece instanceof Pawn && ((Pawn) leftSidePiece).justMovedTwoSquares && ((Pawn) leftSidePiece).onNthRankFromStart(2);
-        if(canEnPassantRight) {
-            System.out.println("ELIGIBLE FOR EN PASSANT RIGHT");
-            Piece finalRightSidePiece = rightSidePiece;
-            moves.add(new Move(origin, rightDiagonal) {
+        // A pawn can only have one en passant opportunity at once.
+        if(canEnPassantLeft || canEnPassantRight) {
+            final Piece enPassantPiece = canEnPassantRight ? rightSidePiece : leftSidePiece;
+            final Coordinate enPassantSquare = canEnPassantRight ? rightDiagonal : leftDiagonal;
+            Move specialMove = new Move(origin, enPassantSquare) {
                 @Override
                 public void special(Board board) {
                     // Removes pawn previously adjacent to attacking pawn. [ EN PASSANT ]
-                    System.out.println("EN PASSANT");
-                    board.removePiece(finalRightSidePiece);
-                    System.out.println(finalRightSidePiece);
-                }
-            });
-        }
-        if(canEnPassantLeft) {
-            System.out.println("ELIGIBLE FOR EN PASSANT LEFT");
-            Piece finalLeftSidePiece = leftSidePiece;
-            Move specialMove = new Move(origin, leftDiagonal) {
-                @Override
-                public void special(Board board) {
-                    // Removes pawn previously adjacent to attacking pawn. [ EN PASSANT ]
-                    System.out.println("EN PASSANT");
-                    board.removePiece(finalLeftSidePiece);
-                    System.out.println(finalLeftSidePiece);
+                    board.removePiece(enPassantPiece);
+                    System.out.println(enPassantPiece);
                 }
             };
             moves.add(specialMove);
-            //specialMove.special(this.getBoard());
         }
+
+
         return moves;
     }
 
