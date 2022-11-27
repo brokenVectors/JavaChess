@@ -38,6 +38,31 @@ public class Coordinate {
         }
         this.y = Character.getNumericValue(str.charAt(1)) - 1; // because arrays have zero-based index
     }
+    public static String toAlphabet(int i) {
+        switch(i){
+            case 0:
+                return "a";
+            case 1:
+                return "b";
+            case 2:
+                return "c";
+            case 3:
+                return "d";
+            case 4:
+                return "e";
+            case 5:
+                return "f";
+            case 6:
+                return "g";
+            case 7:
+                return "h";
+            default:
+                return "?";
+        }
+    }
+    public String toString() {
+        return toAlphabet(this.x) + Integer.toString(this.y + 1);
+    }
     public static boolean isInBounds(int y, int x) {
         return ( (y > 0) && (y < 8) ) && ( (x > 0) && (x < 8) );
     }

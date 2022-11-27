@@ -66,7 +66,6 @@ public class BoardRenderer extends JFrame {
             for(int i = 0; i < 8; i++) {
                 Piece piece = this.board.getPiece(new Coordinate(j,i));
                 // checkerboard
-
                 if( (i + j) % 2 == 0) {
                     graphics2d.setColor(new Color(100,100,100));
                 }
@@ -74,15 +73,12 @@ public class BoardRenderer extends JFrame {
                     graphics2d.setColor(Color.WHITE);
                 }
                 boolean isSelectedSquare = j == this.selected_y && i == this.selected_x;
-                if(isSelectedSquare && selecting && piece != null) {
+                if(isSelectedSquare && selecting && piece != null)
                     graphics2d.setColor(Color.GREEN);
-                }
                 int x = w/8*i;
                 int y = h/8*(7-j) + yOffset;
-                graphics2d.fillRect(x,y,w/8,h/8); // problem
-
+                graphics2d.fillRect(x,y,w/8,h/8);
                 // piece sprite
-
                 if(piece != null)
                     graphics2d.drawImage(this.sprites.get(piece.getColor()).get(piece.getPieceType()), x,y, null);
             }

@@ -7,7 +7,7 @@ import java.util.Vector;
 public class Board {
     private Piece[][] pieces;
     private final HashMap<Boolean, King> kings;
-    private BoardHistory history;
+    private final BoardHistory history;
     private boolean isWhiteToPlay;
     public Board() {
         this.isWhiteToPlay = true;
@@ -69,6 +69,11 @@ public class Board {
         }
         this.pieces[coordinate.y][coordinate.x] = piece;
         piece.setPosition(coordinate);
+    }
+    public void removePiece(Piece piece) {
+        // FIXME: potential history problem? state duplication?
+        // This function is probably going to be used by promotion and en-passant, special moves.
+        this.pieces[piece.getPosition().y][piece.getPosition().x] = null;
     }
 
     public String toString() {
@@ -172,6 +177,16 @@ public class Board {
     public void undo() {
         this.history.undo();
     }
+    private void updatePieces(Move move) {
+        // updating all pieces
+        for(int j = 0; j < 8; j++) {
+            for(int i = 0; i < 8; i++) {
+                Piece pieceToUpdate = this.pieces[j][i];
+                if(pieceToUpdate != null)
+                    pieceToUpdate.onBoardChange(move);
+            }
+        }
+    }
     public boolean makeMove(Move move) {
         // Returns true if move could be made, otherwise returns false
         // TODO: Move validation
@@ -181,17 +196,17 @@ public class Board {
             boolean turnIsRespected = isWhiteToPlay == piece.getColor();
             if(!turnIsRespected) return false; // redundant?
             // Remove piece from origin square, move it to target square
+            piece.onMove(move);
+            move.special(this);
+            updatePieces(move);
             this.movePiece(move);
-            piece.onMove();
             isWhiteToPlay = !isWhiteToPlay; // flip turn
+
             this.detectGameOver();
             return true;
         }
         else {
-
-
             if(piece == null) System.out.println("Couldn't make move: Piece doesn't exist");
-
             else {
                 boolean turnIsRespected = isWhiteToPlay == piece.getColor();
                 if(turnIsRespected)

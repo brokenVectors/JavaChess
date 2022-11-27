@@ -34,6 +34,12 @@ public class Move {
                 return "?";
         }
     }
+
+    public void special(Board board) {
+        // Override to define a special action.
+        // Note that special is run BEFORE the piece is moved.
+        //System.out.println(this.target);
+    }
     public String toString() {
         return toAlphabet(origin.x) + Integer.toString(origin.y + 1) + "-" + toAlphabet(target.x) + Integer.toString(target.y + 1);
     }
