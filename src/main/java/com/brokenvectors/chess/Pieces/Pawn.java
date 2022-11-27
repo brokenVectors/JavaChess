@@ -27,7 +27,7 @@ public class Pawn extends Piece {
         Vector<Move> moves = new Vector<Move>();
         Coordinate origin = this.getPosition();
         // direction inverses movement if pawn is black
-        // TODO: add promotion
+        // TODO: support promotion for different pieces(Queen/Knight/Bishop/Rook)
         int direction = 1;
         if(!this.getColor()) {
             // if pawn is black:
@@ -37,14 +37,30 @@ public class Pawn extends Piece {
         Coordinate leftDiagonal = new Coordinate(this.getPosition().y + direction, this.getPosition().x - 1);
         Coordinate twoSquaresInFront = new Coordinate(origin.y + 2 * direction, origin.x);
         Coordinate oneSquareInFront = new Coordinate(origin.y + direction, origin.x);
+
+        Piece thisPiece = this;
+        // Custom local pawn move class to handle promotion.
+        class PawnMove extends Move {
+            public PawnMove(Coordinate origin, Coordinate target) {
+                super(origin, target);
+            }
+            @Override
+            public void special(Board board) {
+                if(this.target.y == 0 || this.target.y == 7) {
+                    board.removePiece(thisPiece);
+                    board.addPiece(new Queen(board, thisPiece.getColor()), thisPiece.getPosition());
+                }
+            }
+        }
+
         if(this.canOccupy(rightDiagonal) && this.getBoard().getPiece(rightDiagonal) != null)
-            moves.add(new Move(origin, rightDiagonal));
+            moves.add(new PawnMove(origin, rightDiagonal));
         if(this.canOccupy(leftDiagonal) && this.getBoard().getPiece(leftDiagonal) != null)
-            moves.add(new Move(origin, leftDiagonal));
+            moves.add(new PawnMove(origin, leftDiagonal));
         if(this.getBoard().getPiece(oneSquareInFront) == null) {
-            moves.add(new Move(origin, oneSquareInFront));
+            moves.add(new PawnMove(origin, oneSquareInFront));
             if(this.onStartingSquare() && this.getBoard().getPiece(twoSquaresInFront) == null)
-                moves.add(new Move(origin, twoSquaresInFront));
+                moves.add(new PawnMove(origin, twoSquaresInFront));
         }
         // En passant: pawn must be on same row and adjacent to an enemy *pawn* which has just advanced two squares [ CHECK ]
         // Attacking pawn must already be at the en passant square before enemy pawn advances [ CHECK ]
